@@ -4,7 +4,7 @@ body
 	width: 100vw;
 	height: 100vh;
 	overflow: hidden;
-	background-color: black;
+	background-color: white;
 }
 .flsContainer
 {
@@ -15,13 +15,28 @@ body
 	justify-content: center;
 	align-items: center;
 	height: 100%;
-	background-color: white;
-  	.flsUi
+	background-color: black;
+	.flsTutoContainer
+	{
+		padding: 20px;
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		align-items: center;
+		font-family: $font-main;
+		color: white;
+		.flsTutoTitle
+		{
+  			font-family: $font-title;
+		}
+	}
+  	.flsUiContainer
   	{
+  		 color: white;
   		.flsScoreContainer
   		{
   			font-family: $font-title;
-  			color: white;
   		}
   	}
 }

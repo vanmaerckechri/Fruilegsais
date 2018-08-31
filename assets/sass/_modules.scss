@@ -1,1 +1,19 @@
 @import "variables";
+.flsButton
+{
+	border: none;
+	border-radius: 8px;
+	padding: 8px 10px;
+	font-family: $font-title;
+	color: rgba(255, 255, 255, .9);
+	font-size: 1rem;
+	font-weight: bold;
+	background-color: rgba(0, 60, 120, .4);
+	transition: all .5s;
+	&:hover
+	{
+		cursor: pointer;
+		color: black;
+		background-color: rgba(255, 255, 255, .9);
+	}
+}

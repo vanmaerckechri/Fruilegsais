@@ -1,95 +1,119 @@
-let fruilegsais = 
+// -- TOOLS --
+let createElem = function(createType, attributeType, attributeValue)
 {
-	launched: false,
-}
+	let element = document.createElement(createType);
+	if (Array.isArray(attributeType) && Array.isArray(attributeValue))
+	{
+		if (attributeType.length == attributeValue.length)
+		{
+			for (let i = attributeType.length - 1; i >= 0; i--)
+			{
+				element.setAttribute(attributeType[i], attributeValue[i]);
+			}
+			return element;
+		}
+		else
+		{
+			console.log("attributeType.length != attributeValue.length");
+			return;
+		}
+	}
+	if (typeof attributeType == "string" && typeof attributeValue == "string")
+	{
+		element.setAttribute(attributeType, attributeValue);
+		return element;		
+	}
+	else
+	{
+		console.log("attributeType = "+ typeof attributeType);
+		console.log("attributeValue = "+typeof attributeValue);				
+	}
+};
 
-function initCanvas(canvas, canvasName)
+// -- GAME OBJECT --
+let Fruilegsais = class
 {
-	canvasName = canvas.getContext("2d");
-}
+	constructor()
+	{
+		this.launched = false;
+	}
 
+	initCanvas(canvas, canvasName)
+	{
+		if (typeof canvasName == "string")
+		{
+			canvasName = canvas.getContext("2d");
+		}
+		else
+		{
+			for (let i = canvas.length - 1; i >= 0; i--)
+			{
+				canvasName[i] = canvas[i].getContext("2d");
+			}
+		}
+	}
 
-// -- LAUNCH / STOP GAME --
-let launchFruilegsaisGame = function()
-{
-	if (fruilegsais.launched == false)
+	launch()
 	{
 		//create html content
 		let flsContainer = document.getElementById("flsContainer");
-		let fruitlegsaisUi = document.createElement("div");
-		fruitlegsaisUi.setAttribute("class", "flsUiContainer");
 
-		let flsScoreContainer = document.createElement("div");
-		flsScoreContainer.setAttribute("class", "flsScoreContainer");
+		let fruitlegsaisUi = createElem("div", "class", "flsUiContainer");
+		let flsScoreContainer = createElem("div", "class", "flsScoreContainer");
 		flsScoreContainer.innerText = "score: ";
-
-		let flsScore = document.createElement("span");
-		flsScore.setAttribute("id", "flsScore");
+		let flsScore = createElem("span", "id", "flsScore");
 		flsScore.innerText = "0";
 
 		flsScoreContainer.appendChild(flsScore);
 		fruitlegsaisUi.appendChild(flsScoreContainer);
 		flsContainer.appendChild(fruitlegsaisUi);
 
-		let flsCanvasContainer = document.createElement("div");
-		flsCanvasContainer.setAttribute("id", "flsCanvasContainer");
-		flsCanvasContainer.setAttribute("class", "flsCanvasContainer");
-
-		let flsCanvasMain = document.createElement("canvas");
-		flsCanvasMain.setAttribute("id", "flsCanvasMain");
-		flsCanvasMain.setAttribute("class", "flsCanvasMain");
-
+		let flsCanvasContainer = createElem("div", ["id", "class"], ["flsCanvasContainer", "flsCanvasContainer"]);
+		let flsCanvasMain = createElem("canvas", ["id", "class"], ["flsCanvasMain", "flsCanvasMain"]);
 
 		flsCanvasContainer.appendChild(flsCanvasMain);
 		flsContainer.appendChild(flsCanvasContainer);
 
-		initCanvas(flsCanvasMain, "flsCtxMain");
+		this.initCanvas(flsCanvasMain, "flsCtxMain");
 	}
-}
 
-let launchFruilegsaisHome = function()
-{
-	if (fruilegsais.launched == false)
+	launchMainMenu()
 	{
 		let flsContainer = document.getElementById("flsContainer");
-		let flsTuto = document.createElement("div");
-		flsTuto.setAttribute("class", "flsTuto");
 
-		let flsTutoTitle = document.createElement("div");
-		flsTutoTitle.setAttribute("class", "flsTutoTitle");
+		let flsTutoContainer = createElem("div", "class", "flsTutoContainer");
+		let flsTutoTitle = createElem("h2", "class", "flsTutoTitle");
 		flsTutoTitle.innerText = "Partie Bonus";
-
-		let flsTutoContent = document.createElement("div");
-		flsTutoContent.setAttribute("class", "flsTutoContent");
+		let flsTutoContent = createElem("p", "class", "flsTutoContent");
 		flsTutoContent.innerHTML = "Bonjour,</br> Un petit Tuto illustré sera présent sur cette page.";
-
-		let flsLaunchGameButton = document.createElement("button");
-		flsLaunchGameButton.setAttribute("class", "flsButton flsLaunchGameButton");
-		flsLaunchGameButton.setAttribute("id", "flsLaunchGameButton");
+		let flsLaunchGameButton = createElem("button", ["id", "class"], ["flsLaunchGameButton", "flsButton flsLaunchGameButton"]);
 		flsLaunchGameButton.innerText = "commencer"
 
-		flsTuto.appendChild(flsTutoTitle);
-		flsTuto.appendChild(flsTutoContent);
-		flsTuto.appendChild(flsLaunchGameButton);
-		flsContainer.appendChild(flsTuto);
+		flsTutoContainer.appendChild(flsTutoTitle);
+		flsTutoContainer.appendChild(flsTutoContent);
+		flsTutoContainer.appendChild(flsLaunchGameButton);
+		flsContainer.appendChild(flsTutoContainer);
+
 		flsLaunchGameButton.onclick = function()
 		{
-			flsTuto.remove();
-			launchFruilegsaisGame();
+			flsTutoContainer.remove();
+			fruitlegsais.launch();
 		}
 	}
-}
 
-function closeGame()
-{
-	let flsContainerChilds = document.querySelectorAll("#flsContainer div");
-	for (let i = flsContainerChilds.length - 1; i >= 0; i--)
+	closeGame()
 	{
-		flsContainerChilds[i].remove();
+		let flsContainerChilds = document.querySelectorAll("#flsContainer div");
+		for (let i = flsContainerChilds.length - 1; i >= 0; i--)
+		{
+			flsContainerChilds[i].remove();
+			fruitlegsais = null;
+		}
 	}
-}
+};
 
 window.addEventListener("load", function()
 {
-	launchFruilegsaisHome();
+		fruitlegsais = new Fruilegsais();
+		fruitlegsais.launchMainMenu();
 });
