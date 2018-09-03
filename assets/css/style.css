@@ -35,9 +35,26 @@ body {
     .flsContainer .flsTutoContainer .flsTutoTitle {
       font-family: "Orbitron", sans-serif; }
   .flsContainer .flsUiContainer {
+    position: absolute;
+    top: 20px;
     color: white; }
     .flsContainer .flsUiContainer .flsScoreContainer {
       font-family: "Orbitron", sans-serif; }
+    .flsContainer .flsUiContainer .flsDateContainer {
+      font-family: "Orbitron", sans-serif; }
+      .flsContainer .flsUiContainer .flsDateContainer .flsDateDay, .flsContainer .flsUiContainer .flsDateContainer .flsDateMonth {
+        display: inline-block; }
+      .flsContainer .flsUiContainer .flsDateContainer .flsDateDay {
+        margin-right: 8px;
+        min-width: 30px;
+        text-align: right; }
+  .flsContainer .flsFruitLegumeContainer {
+    position: absolute;
+    width: 100%; }
+    .flsContainer .flsFruitLegumeContainer .flsFruitLegumeImg {
+      max-width: 512px;
+      width: 100%;
+      height: auto; }
 
 .flsButton {
   border: none;

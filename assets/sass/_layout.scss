@@ -33,10 +33,37 @@ body
 	}
   	.flsUiContainer
   	{
-  		 color: white;
+  		position: absolute;
+  		top: 20px;
+  		color: white;
   		.flsScoreContainer
   		{
   			font-family: $font-title;
+  		}
+  		.flsDateContainer
+  		{
+  			font-family: $font-title;
+  			.flsDateDay, .flsDateMonth
+  			{
+  				display: inline-block;
+  			}
+  			.flsDateDay
+  			{
+  				margin-right: 8px;
+  				min-width: 30px;
+  				text-align: right;
+  			}
+  		}
+  	}
+  	.flsFruitLegumeContainer
+  	{
+  		position: absolute;
+  		width: 100%;
+  		.flsFruitLegumeImg
+  		{
+  			max-width: 512px;
+  			width: 100%;
+  			height: auto;
   		}
   	}
 }
