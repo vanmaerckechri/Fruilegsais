@@ -48,44 +48,54 @@ let Fruilegsais = class
 			this.cassis = 
 			{
 				monthToEat: ["juillet, août"],
-				img: createElem("img", "src", "assets/img/cassis.png")
+				img: createElem("img", "src", "assets/img/cassis.png"),
+				alt: "cassis"
 			},
-			this.cerise = 
+			this.cerises = 
 			{
 				monthToEat: ["juillet, août"],
-				img: createElem("img", "src", "assets/img/cerise.png")			
+				img: createElem("img", "src", "assets/img/cerise.png"),
+				alt: "cerises"
 			},
-			this.groseille = 
+			this.groseilles = 
 			{
 				monthToEat: ["juin", "juillet"],
-				img: createElem("img", "src", "assets/img/groseille.png")			
+				img: createElem("img", "src", "assets/img/groseille.png"),
+				alt: "groseilles"		
 			},
-			this.myrtille = 
+			this.myrtilles = 
 			{
 				monthToEat: ["juillet, août"],
-				img: createElem("img", "src", "assets/img/myrtille.png")			
+				img: createElem("img", "src", "assets/img/myrtille.png"),
+				alt: "myrtilles"				
 			},
 			this.pomme = 
 			{
 				monthToEat: ["mars", "septembre", "octobre", "novembre", "décembre", "janvier", "février"],
-				img: createElem("img", "src", "assets/img/pomme.png")			
+				img: createElem("img", "src", "assets/img/pomme.png"),
+				alt: "pomme"						
 			},
 			this.poire = 
 			{
 				monthToEat: ["mars", "septembre", "octobre", "novembre", "décembre", "janvier", "février"],
-				img: createElem("img", "src", "assets/img/poire.png")			
+				img: createElem("img", "src", "assets/img/poire.png"),
+				alt: "poire"								
 			},
 			this.carotte = 
 			{
 				monthToEat: ["juin", "juillet", "août", "septembre", "octobre"],
-				img: createElem("img", "src", "assets/img/carotte.png")			
+				img: createElem("img", "src", "assets/img/carotte.png"),
+				alt: "carotte"							
 			},
 			this.potiron = 
 			{
 				monthToEat: ["août", "septembre", "octobre", "novembre", "décembre", "janvier", "février"],
-				img: createElem("img", "src", "assets/img/potiron.png")			
+				img: createElem("img", "src", "assets/img/potiron.png"),
+				alt: "potiron"							
 			}
 		];
+		this.restFruitsLegumesList = this.fruitsLegumesList;
+		this.finalResult = [];
 	}
 
 	initCanvas(canvas, canvasName)
@@ -114,15 +124,17 @@ let Fruilegsais = class
 		let fruitLegumeContainer = document.getElementById("flsFruitLegumeContainer");
 		if (fruitLegumeContainer.querySelectorAll("img").length == 0)
 		{
-			let lengthList = this.fruitsLegumesList.length;
+			let lengthList = this.restFruitsLegumesList.length;
 			let randFruitLegume = Math.floor((Math.random() * lengthList) + 0);
 
-			let currentImg = this.fruitsLegumesList[randFruitLegume].img;
+			let currentImg = this.restFruitsLegumesList[randFruitLegume].img;
 			currentImg.setAttribute("id", "flsFruitLegumeImg");
 			currentImg.setAttribute("class", "flsFruitLegumeImg");
 			fruitLegumeContainer.appendChild(currentImg);
+
+			this.finalResult.push(this.fruitsLegumesList[randFruitLegume].alt);
 			//delete the pick from list
-			this.fruitsLegumesList.splice(randFruitLegume, 1);
+			this.restFruitsLegumesList.splice(randFruitLegume, 1);
 		}
 	}
 
