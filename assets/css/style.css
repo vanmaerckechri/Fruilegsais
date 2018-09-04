@@ -43,7 +43,8 @@ body {
       min-width: 30px;
       text-align: right; }
   .flsContainer .flsCanvasContainer {
-    position: fixed; }
+    position: fixed;
+    z-index: -1; }
   .flsContainer .flsFruitLegumeContainer {
     position: absolute;
     width: 100%;
