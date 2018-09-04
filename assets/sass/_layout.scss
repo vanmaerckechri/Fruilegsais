@@ -58,6 +58,8 @@ body
   	}
   	.flsFruitLegumeContainer
   	{
+  		border-left: 3px solid red;
+  		border-right: 3px solid green;
   		position: absolute;
   		width: 100%;
   		height: 100%;
@@ -96,13 +98,67 @@ body
   	}
   	.flsFinalAnwsersBoardContainer
   	{
-  		 margin-top: 50px;
-  		.flsFinalAnwserContainer
+  		width: 100%;
+  		max-width: 1280px;
+  		margin-top: 50px;
+  		.flsFinalAnwserContainer, .boardContainer
   		{
+  			width: 100%;
+  			display: flex;
+  			justify-content: space-around;
+  			span
+  			{
+  				border: 1px solid white;
+  				display: inline-block;
+  				flex: 1;
+  				height: 128px;
+  			}
   			.flsFinalAnwserImg
   			{
-	  			max-width: 128px;
+  				margin: 0 20px;
+  				width: 128px;
 	  			height: auto;
+  			}
+  			.flsCellColor
+  			{
+  				background-color: rgba(225, 225, 255, .2);
+  			}
+  		}
+  		.flsFinalAnwserContainer
+  		{
+  			.flsMonthToEat
+  			{
+  				background-color: rgba(255, 100, 100, .5);
+  			}
+  			span
+  			{
+  				display: flex;
+  				justify-content: center;
+  				align-items: center;
+	  			.flsMonthChoosed
+	  			{
+	  				border-radius: 50%;
+	  				width: 50%;
+	  				height: 50%;
+	  				background-color: rgba(125, 125, 250, .8);
+	  			}
+	  		}
+  		}
+  		.boardContainer
+  		{
+  			span
+  			{
+  				display: flex;
+  				justify-content: center;
+  				align-items: center;
+  			}
+  			.flsWidthImgDummy
+  			{
+  				flex: initial;
+  				border: none;
+  				margin: 0 20px;
+  				width: 128px;
+  				height: 128px;
   			}
   		}
   	}

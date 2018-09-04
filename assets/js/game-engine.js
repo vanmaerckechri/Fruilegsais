@@ -48,14 +48,14 @@ let Fruilegsais = class
 		[
 			this.cassis = 
 			{
-				monthToEat: ["juillet, août"],
+				monthToEat: ["juillet", "août"],
 				img: createElem("img", "src", "assets/img/cassis.png"),
 				alt: "cassis",
 				id: 0
 			},
 			this.cerises = 
 			{
-				monthToEat: ["juillet, août"],
+				monthToEat: ["juillet", "août"],
 				img: createElem("img", "src", "assets/img/cerise.png"),
 				alt: "cerises",
 				id: 1
@@ -69,7 +69,7 @@ let Fruilegsais = class
 			},
 			this.myrtilles = 
 			{
-				monthToEat: ["juillet, août"],
+				monthToEat: ["juillet", "août"],
 				img: createElem("img", "src", "assets/img/myrtille.png"),
 				alt: "myrtilles",
 				id: 3		
@@ -313,7 +313,7 @@ let Fruilegsais = class
 		}
 	}
 
-	choseAnswer(that, event)
+	chooseAnswer(that, event)
 	{
 		let fruitLegumeContainer = document.getElementById("flsFruitLegumeContainer");
 		let touchStartPosX;
@@ -379,21 +379,53 @@ let Fruilegsais = class
 
 	callFinalAnwsersBoard()
 	{
-		let bodyTag = document.getElementsByTagName("BODY");
 		let flsContainer = document.getElementById("flsContainer");
 		let finalAnwsersBoardContainer = createElem("div", ["id", "class"], ["flsFinalAnwsersBoardContainer","flsFinalAnwsersBoardContainer"]);
 		flsContainer.appendChild(finalAnwsersBoardContainer);
 
-		document.body.setAttribute("class", "flsBodyOverflowOn");
-		flsContainer.classList.add("flsContainerFinalScore")
+		// months board
+		let titleBoardContainer = createElem("div", ["id", "class"], ["titleBoardContainer","boardContainer"]);
+		titleBoardContainer.innerHTML = '<span class="flsWidthImgDummy"></span><span>mars</span><span class="flsCellColor">avril</span><span>mai</span><span class="flsCellColor">juin</span><span>juillet</span><span class="flsCellColor">août</span><span>sept.</span><span class="flsCellColor">oct.</span><span>nov.</span><span class="flsCellColor">déc.</span><span>janvier</span><span class="flsCellColor">février</span>';
+		finalAnwsersBoardContainer.appendChild(titleBoardContainer);
 
-		for (let i = this.finalResult[0].length - 1; i >= 0; i--)
+		// img and choices
+		for (let rowNum = this.finalResult[0].length - 1; rowNum >= 0; rowNum--)
 		{
-			let finalAnwserContainer = createElem("div", ["id", "class"], ["flsFinalAnwserContainer" + i,"flsFinalAnwserContainer"]);
-			let finalAnwserImg = this.fruitsLegumesList[this.finalResult[0][i]]["img"];
-			finalAnwserImg.setAttribute("id", "flsFinalAnwserImg");
+			let finalAnwserContainer = createElem("div", ["id", "class"], ["flsFinalAnwserContainer" + rowNum,"flsFinalAnwserContainer"]);
+			let finalAnwserImg = this.fruitsLegumesList[this.finalResult[0][rowNum]]["img"];
+			let finalAnswerId = "flsFinalAnwserImg" + this.finalResult[0][rowNum];
+
+			finalAnwserImg.setAttribute("id", finalAnswerId);
 			finalAnwserImg.setAttribute("class", "flsFinalAnwserImg");
 			finalAnwserContainer.appendChild(finalAnwserImg);
+
+			for (let colNum = 0; colNum < 12; colNum++)
+			{
+				let newCell = document.createElement("span");
+				let addClass = "";
+
+				if (this.monthList[colNum] == this.monthList[this.finalResult[1][rowNum]])
+				{
+					let monthChoosed = document.createElement("p");
+					monthChoosed.setAttribute("class", "flsMonthChoosed");
+					newCell.appendChild(monthChoosed);
+				}
+				for (let k = this.fruitsLegumesList[this.finalResult[0][rowNum]]["monthToEat"].length - 1; k >= 0; k--)
+				{
+					if (this.monthList[colNum] == this.fruitsLegumesList[this.finalResult[0][rowNum]]["monthToEat"][k])
+					{
+						addClass = "flsMonthToEat";
+						break;
+					}
+				}
+				if (colNum % 2 != 0)
+				{
+					addClass += " flsCellColor";
+				}
+				newCell.setAttribute("class", addClass)
+				finalAnwserContainer.appendChild(newCell);
+			}
+
 			finalAnwsersBoardContainer.appendChild(finalAnwserContainer);
 		}
 	}
@@ -407,6 +439,9 @@ let Fruilegsais = class
 
 		flsContainer.appendChild(scoreFinalContainer);
 		scoreFinalContainer.innerHTML = '<span class="flsScoreFinalText">score: </span>' + this.score + ' + ' + scoreDaysHTML + ' nombre de jours restants = ' + scoreFinalHTML;
+
+		document.body.setAttribute("class", "flsBodyOverflowOn");
+		flsContainer.classList.add("flsContainerFinalScore");
 
 		this.callFinalAnwsersBoard();
 		this.refreshFinalScore();
@@ -452,7 +487,7 @@ let Fruilegsais = class
 		{
 			startEvent = "mousedown";
 		}
-		fruitLegumeContainer.addEventListener(startEvent, this.choseAnswer.bind(that, this), false);
+		fruitLegumeContainer.addEventListener(startEvent, this.chooseAnswer.bind(that, this), false);
 	}
 
 	initCanvas(canvas, canvasName)
