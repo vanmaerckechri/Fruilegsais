@@ -119,15 +119,19 @@ let Fruilegsais = class
 				alt: "radis roses"							
 			}
 		];
+		this.badAnswerImg = createElem("img", ["id", "class", "src"], ["answerImg", "answerImg", "assets/img/answer_inco.svg"]);
+		this.goodAnswerImg = createElem("img", ["id", "class", "src"], ["answerImg", "answerImg", "assets/img/answer_co.svg"]);
+
 		this.restFruitsLegumesList = this.fruitsLegumesList;
 		this.finalResult = [[],[]];
 	}
 
 	choseRandFruitLegume()
 	{
-		let fruitLegumeContainer = document.getElementById("flsFruitLegumeContainer");
-		if (fruitLegumeContainer.querySelectorAll("img").length == 0)
+		if (document.getElementById("flsFruitLegumeImg") == null)
 		{
+			let fruitLegumeContainer = document.getElementById("flsFruitLegumeContainer");
+
 			let lengthList = this.restFruitsLegumesList.length;
 			let randFruitLegume = Math.floor((Math.random() * lengthList) + 0);
 
@@ -223,29 +227,35 @@ let Fruilegsais = class
 		}
 	}
 
-	checkAnswerCorrect(answer)
+	checkAccuracyAnswer(answer)
 	{
+		let fruitLegumeContainer = document.getElementById("flsFruitLegumeContainer");
+		let fruitLegumeImg;
 		for (let i = this.currentFruiLeg["monthToEat"].length - 1; i >= 0; i--)
 		{
 			// check if this fruit/legume is in season
 			if (this.currentFruiLeg["monthToEat"][i] == this.monthList[this.currentMonth])
 			{
-				console.log(this.monthList[this.currentMonth]);
 				// good answer = in season
 				if (answer == true)
 				{
+					fruitLegumeImg = this.goodAnswerImg;
+					fruitLegumeContainer.appendChild(fruitLegumeImg);
 					return true;
 				}
 				break;
 			}
-		}
-		console.log(this.monthList[this.currentMonth]);
-		// good answer = not in season
-		if (answer == false)
-		{
-			return true;
+			// good answer = not in season
+			if (i == 0 && answer == false)
+			{
+				fruitLegumeImg = this.goodAnswerImg;
+				fruitLegumeContainer.appendChild(fruitLegumeImg);
+				return true;
+			}
 		}
 		// bad answer
+		fruitLegumeImg = this.badAnswerImg;
+		fruitLegumeContainer.appendChild(fruitLegumeImg);
 		return false;
 	}
 
@@ -256,12 +266,20 @@ let Fruilegsais = class
 
 		if (!fruitLegumeImg.classList.contains("flsFruitLegumeImgAnswerTrue") && !fruitLegumeImg.classList.contains("flsFruitLegumeImgAnswerFalse"))
 		{
+			// score and display
+			answerResult = this.checkAccuracyAnswer(answer);
+			this.treatScore(answerResult);
+
+			// reset
 			let deleteImg = setTimeout(function()
 			{
+				let answerImg = document.getElementById("answerImg");
 				fruitLegumeImg.remove();
+				answerImg.remove();
 				clearTimeout(deleteImg);
 			}, 500);
 
+			// update answer array
 			if (answer == true)
 			{
 				fruitLegumeImg.classList.add("flsFruitLegumeImgAnswerTrue");
@@ -272,9 +290,6 @@ let Fruilegsais = class
 				fruitLegumeImg.classList.add("flsFruitLegumeImgAnswerFalse");
 				this.finalResult[this.finalResult.length - 1].push(false);
 			}
-			//score
-			answerResult = this.checkAnswerCorrect(answer);
-			this.treatScore(answerResult);
 		}
 	}
 

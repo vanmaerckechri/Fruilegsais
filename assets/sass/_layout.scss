@@ -60,7 +60,7 @@ body
   		position: absolute;
   		width: 100%;
   		height: 100%;
-  		.flsFruitLegumeImg
+  		.flsFruitLegumeImg, .answerImg
   		{
   			position: absolute;
   			top: 50%;
@@ -79,6 +79,10 @@ body
   		.flsFruitLegumeImgAnswerFalse
   		{
   			left: -256px;
+  		}
+  		.answerImg
+  		{
+  			z-index: 1;
   		}
   	}
 }
