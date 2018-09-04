@@ -199,17 +199,6 @@ let Fruilegsais = class
 		}
 	}
 
-	refreshGame()
-	{
-		for (let i = this.canvasList.length - 1; i >= 0; i --)
-		{
-			this.canvasList[i].clearRect(0, 0, this.canvasList[i].width, this.canvasList[i].height);
-		}
-		this.countTime();
-		this.choseRandFruitLegume();
-	    this.refreshGameLoop = requestAnimationFrame(this.refreshGame.bind(this));
-	}
-
 	treatScore(answerResult)
 	{
 		let score = document.getElementById("flsScore");
@@ -346,6 +335,25 @@ let Fruilegsais = class
 					that.treatAnswer(false);
 				}
 			};			
+		}
+	}
+
+	refreshGame()
+	{
+		for (let i = this.canvasList.length - 1; i >= 0; i --)
+		{
+			this.canvasList[i].clearRect(0, 0, this.canvasList[i].width, this.canvasList[i].height);
+		}
+
+		if (this.restFruitsLegumesList.length > 0)
+		{
+			this.countTime();
+			this.choseRandFruitLegume();
+	    	this.refreshGameLoop = requestAnimationFrame(this.refreshGame.bind(this));
+		}
+		else
+		{
+			window.cancelAnimationFrame(this.refreshGameLoop);
 		}
 	}
 
