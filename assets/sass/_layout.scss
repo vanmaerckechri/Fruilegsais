@@ -59,11 +59,26 @@ body
   	{
   		position: absolute;
   		width: 100%;
+  		height: 100%;
   		.flsFruitLegumeImg
   		{
+  			position: absolute;
+  			top: 50%;
+  			left: 50%;
   			max-width: 512px;
   			width: 100%;
   			height: auto;
+  			transform: translate(-50%, -50%);
+  			transition: all .5s;
+  			pointer-events: none;
+  		}
+  		.flsFruitLegumeImgAnswerTrue
+  		{
+  			left: calc(100% + 256px);
+  		}
+  		.flsFruitLegumeImgAnswerFalse
+  		{
+  			left: -256px;
   		}
   	}
 }

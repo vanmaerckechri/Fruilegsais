@@ -42,6 +42,7 @@ let Fruilegsais = class
 		this.daysByMonth = [31, 30, 31, 30, 31, 31, 30, 31, 30, 31, 31, 29];
 		this.currentMonth = 0;//!(it's the array index);
 		this.currentDay = 21;
+		this.currentFruiLeg;
 
 		this.fruitsLegumesList = 
 		[
@@ -87,15 +88,39 @@ let Fruilegsais = class
 				img: createElem("img", "src", "assets/img/carotte.png"),
 				alt: "carotte"							
 			},
+			this.petitspois = 
+			{
+				monthToEat: ["juin", "juillet"],
+				img: createElem("img", "src", "assets/img/petitpois.png"),
+				alt: "petits pois"							
+			},
 			this.potiron = 
 			{
 				monthToEat: ["août", "septembre", "octobre", "novembre", "décembre", "janvier", "février"],
 				img: createElem("img", "src", "assets/img/potiron.png"),
 				alt: "potiron"							
+			},
+			this.tomate = 
+			{
+				monthToEat: ["mai", "juin", "juillet", "août", "septembre", "octobre"],
+				img: createElem("img", "src", "assets/img/tomate.png"),
+				alt: "tomate"							
+			},
+			this.pdt = 
+			{
+				monthToEat: ["mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "décembre", "janvier", "février"],
+				img: createElem("img", "src", "assets/img/pdt.png"),
+				alt: "pommes de terre"							
+			},
+			this.radi = 
+			{
+				monthToEat: ["avril", "mai", "juin", "juillet", "août", "septembre"],
+				img: createElem("img", "src", "assets/img/radirose.png"),
+				alt: "radis roses"							
 			}
 		];
 		this.restFruitsLegumesList = this.fruitsLegumesList;
-		this.finalResult = [];
+		this.finalResult = [[],[]];
 	}
 
 	choseRandFruitLegume()
@@ -111,7 +136,8 @@ let Fruilegsais = class
 			currentImg.setAttribute("class", "flsFruitLegumeImg");
 			fruitLegumeContainer.appendChild(currentImg);
 
-			this.finalResult.push(this.fruitsLegumesList[randFruitLegume].alt);
+			this.currentFruiLeg = this.fruitsLegumesList[randFruitLegume];
+			this.finalResult[0].push(this.fruitsLegumesList[randFruitLegume].alt);
 			//delete the pick from list
 			this.restFruitsLegumesList.splice(randFruitLegume, 1);
 		}
@@ -180,6 +206,152 @@ let Fruilegsais = class
 	    this.refreshGameLoop = requestAnimationFrame(this.refreshGame.bind(this));
 	}
 
+	treatScore(answerResult)
+	{
+		let score = document.getElementById("flsScore");
+
+		if (answerResult == true)
+		{
+			score.innerText = parseInt(score.innerText, 10) + 1;
+		}
+		else
+		{
+			if (parseInt(score.innerText) > 0)
+			{
+				score.innerText = parseInt(score.innerText, 10) - 1;
+			}
+		}
+	}
+
+	checkAnswerCorrect(answer)
+	{
+		for (let i = this.currentFruiLeg["monthToEat"].length - 1; i >= 0; i--)
+		{
+			// check if this fruit/legume is in season
+			if (this.currentFruiLeg["monthToEat"][i] == this.monthList[this.currentMonth])
+			{
+				console.log(this.monthList[this.currentMonth]);
+				// good answer = in season
+				if (answer == true)
+				{
+					return true;
+				}
+				break;
+			}
+		}
+		console.log(this.monthList[this.currentMonth]);
+		// good answer = not in season
+		if (answer == false)
+		{
+			return true;
+		}
+		// bad answer
+		return false;
+	}
+
+	treatAnswer(answer)
+	{
+		let fruitLegumeImg = document.getElementById("flsFruitLegumeImg");
+		let answerResult;
+
+		if (!fruitLegumeImg.classList.contains("flsFruitLegumeImgAnswerTrue") && !fruitLegumeImg.classList.contains("flsFruitLegumeImgAnswerFalse"))
+		{
+			let deleteImg = setTimeout(function()
+			{
+				fruitLegumeImg.remove();
+				clearTimeout(deleteImg);
+			}, 500);
+
+			if (answer == true)
+			{
+				fruitLegumeImg.classList.add("flsFruitLegumeImgAnswerTrue");
+				this.finalResult[this.finalResult.length - 1].push(true);
+			}
+			else
+			{
+				fruitLegumeImg.classList.add("flsFruitLegumeImgAnswerFalse");
+				this.finalResult[this.finalResult.length - 1].push(false);
+			}
+			//score
+			answerResult = this.checkAnswerCorrect(answer);
+			this.treatScore(answerResult);
+		}
+	}
+
+	choseAnswer(that, event)
+	{
+		let fruitLegumeContainer = document.getElementById("flsFruitLegumeContainer");
+		let touchStartPosX;
+		let touchMovePosX;
+		// with tactile
+		if ('ontouchstart' in document.documentElement)
+		{
+			event.preventDefault();
+			touchStartPosX = event.touches[0].clientX;
+			fruitLegumeContainer.ontouchmove = function(event)
+			{
+				touchMovePosX = event.touches[0].clientX;
+			};
+
+			window.ontouchend = function()
+			{
+				fruitLegumeContainer.ontouchmove = null;
+				window.ontouchend = null;
+
+				if (touchStartPosX + 50 < touchMovePosX)
+				{
+					that.treatAnswer(true);
+				}
+				else if (touchStartPosX - 50 > touchMovePosX)
+				{
+					that.treatAnswer(false);
+				}
+			};
+		}
+		// with mouse
+		else
+		{
+			touchStartPosX = event.clientX;
+			fruitLegumeContainer.onmousemove = function(event)
+			{
+				touchMovePosX = event.clientX;
+			};
+
+			window.onmouseup = function()
+			{
+				fruitLegumeContainer.onmousemove = null;
+				window.onmouseup = null;
+
+				if (touchStartPosX + 50 < touchMovePosX)
+				{
+					that.treatAnswer(true);
+				}
+				else if (touchStartPosX - 50 > touchMovePosX)
+				{
+					that.treatAnswer(false);
+				}
+			};			
+		}
+	}
+
+	initCommands()
+	{
+		let fruitLegumeContainer = document.getElementById("flsFruitLegumeContainer");
+		let that = this;
+		let startEvent;
+		// with tactile
+		if ('ontouchstart' in document.documentElement)
+		{
+			startEvent = "touchstart";
+		}
+		// with mouse
+		else
+		{
+			startEvent = "mousedown";
+		}
+		fruitLegumeContainer.addEventListener(startEvent, this.choseAnswer.bind(that, this), false);
+	}
+
 	initCanvas(canvas, canvasName)
 	{
 		if (typeof canvasName == "string")
@@ -199,73 +371,6 @@ let Fruilegsais = class
 				this.canvasList.push(canvasName[i]);
 			}
 		}
-	}
-
-	recordAnswer(answer)
-	{
-		console.log(answer);
-	}
-
-	choseAnswer(that, event)
-	{
-		let fruitLegumeContainer = document.getElementById("flsFruitLegumeContainer");
-		let touchStartPosX;
-		let touchMovePosX;
-		// with tactile
-		if ('ontouchstart' in document.documentElement)
-		{
-			touchStartPosX = event.touches[0].clientX;
-			fruitLegumeContainer.ontouchmove = function(event)
-			{
-				touchMovePosX = event.touches[0].clientX;
-			};
-
-			window.ontouchend = function()
-			{
-				fruitLegumeContainer.ontouchmove = null;
-				window.ontouchend = null;
-
-				if (touchStartPosX < touchMovePosX)
-				{
-					that.recordAnswer(true);
-				}
-				else
-				{
-					that.recordAnswer(false);
-				}
-			};
-		}
-		// with mouse
-		else
-		{
-			touchStartPosX = event.clientX;
-			fruitLegumeContainer.onmousemove = function(event)
-			{
-				touchMovePosX = event.clientX;
-			};
-
-			window.onmouseup = function()
-			{
-				fruitLegumeContainer.onmousemove = null;
-				window.onmouseup = null;
-
-				if (touchStartPosX < touchMovePosX)
-				{
-					that.recordAnswer(true);
-				}
-				else
-				{
-					that.recordAnswer(false);
-				}
-			};			
-		}
-	}
-
-	initEvents()
-	{
-		let fruitLegumeContainer = document.getElementById("flsFruitLegumeContainer");
-		let that = this;
-		fruitLegumeContainer.addEventListener("touchstart", this.choseAnswer.bind(that, this), false) || fruitLegumeContainer.addEventListener("click", this.choseAnswer.bind(that, this), false);
 	}
 
 	launch()
@@ -311,7 +416,7 @@ let Fruilegsais = class
 		flsContainer.appendChild(flsCanvasContainer);
 
 		this.initCanvas(flsCanvasMain, "flsCtxMain");
-		this.initEvents();
+		this.initCommands();
 		window.requestAnimationFrame(this.refreshGame.bind(this)); 
 	}
 
