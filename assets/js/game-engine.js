@@ -98,27 +98,6 @@ let Fruilegsais = class
 		this.finalResult = [];
 	}
 
-	initCanvas(canvas, canvasName)
-	{
-		if (typeof canvasName == "string")
-		{
-			canvas.width = window.innerWidth;
-			canvas.height = window.innerHeight;
-			canvasName = canvas.getContext("2d");
-			this.canvasList.push(canvasName);
-		}
-		else
-		{
-			for (let i = canvas.length - 1; i >= 0; i--)
-			{
-				canvas[i].width = window.innerWidth;
-				canvas[i].height = window.innerHeight;
-				canvasName[i] = canvas[i].getContext("2d");
-				this.canvasList.push(canvasName[i]);
-			}
-		}
-	}
-
 	choseRandFruitLegume()
 	{
 		let fruitLegumeContainer = document.getElementById("flsFruitLegumeContainer");
@@ -201,6 +180,94 @@ let Fruilegsais = class
 	    this.refreshGameLoop = requestAnimationFrame(this.refreshGame.bind(this));
 	}
 
+	initCanvas(canvas, canvasName)
+	{
+		if (typeof canvasName == "string")
+		{
+			canvas.width = window.innerWidth;
+			canvas.height = window.innerHeight;
+			canvasName = canvas.getContext("2d");
+			this.canvasList.push(canvasName);
+		}
+		else
+		{
+			for (let i = canvas.length - 1; i >= 0; i--)
+			{
+				canvas[i].width = window.innerWidth;
+				canvas[i].height = window.innerHeight;
+				canvasName[i] = canvas[i].getContext("2d");
+				this.canvasList.push(canvasName[i]);
+			}
+		}
+	}
+
+	recordAnswer(answer)
+	{
+		console.log(answer);
+	}
+
+	choseAnswer(that, event)
+	{
+		let fruitLegumeContainer = document.getElementById("flsFruitLegumeContainer");
+		let touchStartPosX;
+		let touchMovePosX;
+		// with tactile
+		if ('ontouchstart' in document.documentElement)
+		{
+			touchStartPosX = event.touches[0].clientX;
+			fruitLegumeContainer.ontouchmove = function(event)
+			{
+				touchMovePosX = event.touches[0].clientX;
+			};
+
+			window.ontouchend = function()
+			{
+				fruitLegumeContainer.ontouchmove = null;
+				window.ontouchend = null;
+
+				if (touchStartPosX < touchMovePosX)
+				{
+					that.recordAnswer(true);
+				}
+				else
+				{
+					that.recordAnswer(false);
+				}
+			};
+		}
+		// with mouse
+		else
+		{
+			touchStartPosX = event.clientX;
+			fruitLegumeContainer.onmousemove = function(event)
+			{
+				touchMovePosX = event.clientX;
+			};
+
+			window.onmouseup = function()
+			{
+				fruitLegumeContainer.onmousemove = null;
+				window.onmouseup = null;
+
+				if (touchStartPosX < touchMovePosX)
+				{
+					that.recordAnswer(true);
+				}
+				else
+				{
+					that.recordAnswer(false);
+				}
+			};			
+		}
+	}
+
+	initEvents()
+	{
+		let fruitLegumeContainer = document.getElementById("flsFruitLegumeContainer");
+		let that = this;
+		fruitLegumeContainer.addEventListener("touchstart", this.choseAnswer.bind(that, this), false) || fruitLegumeContainer.addEventListener("click", this.choseAnswer.bind(that, this), false);
+	}
+
 	launch()
 	{
 		//create html content
@@ -244,6 +311,7 @@ let Fruilegsais = class
 		flsContainer.appendChild(flsCanvasContainer);
 
 		this.initCanvas(flsCanvasMain, "flsCtxMain");
+		this.initEvents();
 		window.requestAnimationFrame(this.refreshGame.bind(this)); 
 	}
 
