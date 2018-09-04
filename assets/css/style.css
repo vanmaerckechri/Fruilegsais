@@ -19,7 +19,7 @@ body {
   text-align: center;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   height: 100%;
   background-color: black;
@@ -34,8 +34,7 @@ body {
     align-items: center;
     font-family: "Open Sans", sans-serif; }
   .flsContainer .flsUiContainer {
-    position: absolute;
-    top: 20px; }
+    margin-top: 50px; }
     .flsContainer .flsUiContainer .flsDateContainer .flsDateDay, .flsContainer .flsUiContainer .flsDateContainer .flsDateMonth {
       display: inline-block; }
     .flsContainer .flsUiContainer .flsDateContainer .flsDateDay {
@@ -65,8 +64,15 @@ body {
       left: -256px; }
     .flsContainer .flsFruitLegumeContainer .flsAnswerImg {
       z-index: 1; }
-  .flsContainer .flsScoreFinalContainer .flsScoreFinalText, .flsContainer .flsScoreFinalContainer .flsScoreFinal {
-    font-size: 1.5rem; }
+  .flsContainer .flsScoreFinalContainer {
+    margin-top: 50px; }
+    .flsContainer .flsScoreFinalContainer .flsScoreFinalText, .flsContainer .flsScoreFinalContainer .flsScoreFinal {
+      font-size: 1.5rem; }
+  .flsContainer .flsFinalAnwsersBoardContainer {
+    margin-top: 50px; }
+    .flsContainer .flsFinalAnwsersBoardContainer .flsFinalAnwserContainer .flsFinalAnwserImg {
+      max-width: 128px;
+      height: auto; }
 
 .flsButton {
   border: none;
@@ -82,5 +88,12 @@ body {
     cursor: pointer;
     color: black;
     background-color: rgba(255, 255, 255, 0.9); }
+
+.flsBodyOverflowOn {
+  height: auto;
+  overflow: auto; }
+
+.flsContainerFinalScore {
+  justify-content: center; }
 
 /*# sourceMappingURL=style.css.map */

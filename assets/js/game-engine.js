@@ -50,80 +50,92 @@ let Fruilegsais = class
 			{
 				monthToEat: ["juillet, août"],
 				img: createElem("img", "src", "assets/img/cassis.png"),
-				alt: "cassis"
+				alt: "cassis",
+				id: 0
 			},
 			this.cerises = 
 			{
 				monthToEat: ["juillet, août"],
 				img: createElem("img", "src", "assets/img/cerise.png"),
-				alt: "cerises"
+				alt: "cerises",
+				id: 1
 			},
 			this.groseilles = 
 			{
 				monthToEat: ["juin", "juillet"],
 				img: createElem("img", "src", "assets/img/groseille.png"),
-				alt: "groseilles"		
+				alt: "groseilles",
+				id: 2		
 			},
 			this.myrtilles = 
 			{
 				monthToEat: ["juillet, août"],
 				img: createElem("img", "src", "assets/img/myrtille.png"),
-				alt: "myrtilles"				
+				alt: "myrtilles",
+				id: 3		
 			},
 			this.pomme = 
 			{
 				monthToEat: ["mars", "septembre", "octobre", "novembre", "décembre", "janvier", "février"],
 				img: createElem("img", "src", "assets/img/pomme.png"),
-				alt: "pomme"						
+				alt: "pomme",
+				id: 4	
 			},
 			this.poire = 
 			{
 				monthToEat: ["mars", "septembre", "octobre", "novembre", "décembre", "janvier", "février"],
 				img: createElem("img", "src", "assets/img/poire.png"),
-				alt: "poire"								
+				alt: "poire",
+				id: 5	
 			},
 			this.carotte = 
 			{
 				monthToEat: ["juin", "juillet", "août", "septembre", "octobre"],
 				img: createElem("img", "src", "assets/img/carotte.png"),
-				alt: "carotte"							
+				alt: "carotte",	
+				id: 6
 			},
 			this.petitspois = 
 			{
 				monthToEat: ["juin", "juillet"],
 				img: createElem("img", "src", "assets/img/petitpois.png"),
-				alt: "petits pois"							
+				alt: "petits pois",	
+				id: 7
 			},
 			this.potiron = 
 			{
 				monthToEat: ["août", "septembre", "octobre", "novembre", "décembre", "janvier", "février"],
 				img: createElem("img", "src", "assets/img/potiron.png"),
-				alt: "potiron"							
+				alt: "potiron",		
+				id: 8
 			},
 			this.tomate = 
 			{
 				monthToEat: ["mai", "juin", "juillet", "août", "septembre", "octobre"],
 				img: createElem("img", "src", "assets/img/tomate.png"),
-				alt: "tomate"							
+				alt: "tomate",	
+				id: 9
 			},
 			this.pdt = 
 			{
 				monthToEat: ["mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "décembre", "janvier", "février"],
 				img: createElem("img", "src", "assets/img/pdt.png"),
-				alt: "pommes de terre"							
+				alt: "pommes de terre",	
+				id: 10
 			},
 			this.radi = 
 			{
 				monthToEat: ["avril", "mai", "juin", "juillet", "août", "septembre"],
 				img: createElem("img", "src", "assets/img/radirose.png"),
-				alt: "radis roses"							
+				alt: "radis roses",		
+				id: 11
 			}
 		];
 		this.badAnswerImg = createElem("img", ["id", "class", "src"], ["flsAnswerImg", "flsAnswerImg", "assets/img/answer_inco.svg"]);
 		this.goodAnswerImg = createElem("img", ["id", "class", "src"], ["flsAnswerImg", "flsAnswerImg", "assets/img/answer_co.svg"]);
 
-		this.restFruitsLegumesList = this.fruitsLegumesList;
-		this.finalResult = [[],[]];
+		this.restFruitsLegumesList = this.fruitsLegumesList.slice();// empty slice to clone array with objects(not instance it)
+		this.finalResult = [[], [], []];//this.finalResult[ [0] = fruit/legume index, [1] = month index, [2] = good/bad answer
 		this.score = 0;
 		this.endOfGame = false;
 		this.numberDaysRemaining = 0;
@@ -143,8 +155,8 @@ let Fruilegsais = class
 			currentImg.setAttribute("class", "flsFruitLegumeImg");
 			fruitLegumeContainer.appendChild(currentImg);
 
-			this.currentFruiLeg = this.fruitsLegumesList[randFruitLegume];
-			this.finalResult[0].push(this.fruitsLegumesList[randFruitLegume].alt);
+			this.currentFruiLeg = this.restFruitsLegumesList[randFruitLegume];
+			this.finalResult[0].push(this.restFruitsLegumesList[randFruitLegume]["id"]);
 			//delete the pick from list
 			this.restFruitsLegumesList.splice(randFruitLegume, 1);
 		}
@@ -209,38 +221,18 @@ let Fruilegsais = class
 		}
 	}
 
-	refreshBonusTimeScore()
-	{
-		this.countTime(10);
-		document.getElementById("scoreDaysRemaining").innerText = this.numberDaysRemaining;
-		document.getElementById("flsScoreFinal").innerText = this.score + this.numberDaysRemaining;
-		this.refreshGameLoop = window.requestAnimationFrame(this.refreshBonusTimeScore.bind(this));
-	}
-
-
-
-	callFinalScreen()
-	{
-		let flsContainer = document.getElementById("flsContainer");
-		let scoreFinalContainer = createElem("div", ["id", "class"], ["flsScoreFinalContainer","flsScoreFinalContainer"]);
-		let scoreDaysHTML = '<span id="scoreDaysRemaining" class="scoreDaysRemaining"></span>';
-		let scoreFinalHTML = '<span id="flsScoreFinal" class="flsScoreFinal">' + this.score + '</span>';
-
-		flsContainer.appendChild(scoreFinalContainer);
-		scoreFinalContainer.innerHTML = '<span class="flsScoreFinalText">score: </span>' + this.score + ' + ' + scoreDaysHTML + ' nombre de jours restants = ' + scoreFinalHTML;
-
-		this.refreshBonusTimeScore();
-	}
-
 	treatScore(answerResult)
 	{
 		let score = document.getElementById("flsScore");
+
+		this.finalResult[1].push(this.currentMonth);
 
 		if (answerResult == true)
 		{
 			this.score += 100;
 			score.innerText = this.score;
 			this.numberOfGoodAnswer += 1;
+			this.finalResult[2].push(true);
 		}
 		else
 		{
@@ -248,6 +240,7 @@ let Fruilegsais = class
 			{
 				this.score -= 100;
 				score.innerText = this.score;
+				this.finalResult[2].push(false);
 			}
 		}
 	}
@@ -374,6 +367,49 @@ let Fruilegsais = class
 				}
 			};			
 		}
+	}
+
+	refreshFinalScore()
+	{
+		this.countTime(10);
+		document.getElementById("scoreDaysRemaining").innerText = this.numberDaysRemaining;
+		document.getElementById("flsScoreFinal").innerText = this.score + this.numberDaysRemaining;
+		this.refreshGameLoop = window.requestAnimationFrame(this.refreshFinalScore.bind(this));
+	}
+
+	callFinalAnwsersBoard()
+	{
+		let bodyTag = document.getElementsByTagName("BODY");
+		let flsContainer = document.getElementById("flsContainer");
+		let finalAnwsersBoardContainer = createElem("div", ["id", "class"], ["flsFinalAnwsersBoardContainer","flsFinalAnwsersBoardContainer"]);
+		flsContainer.appendChild(finalAnwsersBoardContainer);
+
+		document.body.setAttribute("class", "flsBodyOverflowOn");
+		flsContainer.classList.add("flsContainerFinalScore")
+
+		for (let i = this.finalResult[0].length - 1; i >= 0; i--)
+		{
+			let finalAnwserContainer = createElem("div", ["id", "class"], ["flsFinalAnwserContainer" + i,"flsFinalAnwserContainer"]);
+			let finalAnwserImg = this.fruitsLegumesList[this.finalResult[0][i]]["img"];
+			finalAnwserImg.setAttribute("id", "flsFinalAnwserImg");
+			finalAnwserImg.setAttribute("class", "flsFinalAnwserImg");
+			finalAnwserContainer.appendChild(finalAnwserImg);
+			finalAnwsersBoardContainer.appendChild(finalAnwserContainer);
+		}
+	}
+
+	callFinalScreen()
+	{
+		let flsContainer = document.getElementById("flsContainer");
+		let scoreFinalContainer = createElem("div", ["id", "class"], ["flsScoreFinalContainer","flsScoreFinalContainer"]);
+		let scoreDaysHTML = '<span id="scoreDaysRemaining" class="scoreDaysRemaining"></span>';
+		let scoreFinalHTML = '<span id="flsScoreFinal" class="flsScoreFinal">' + this.score + '</span>';
+
+		flsContainer.appendChild(scoreFinalContainer);
+		scoreFinalContainer.innerHTML = '<span class="flsScoreFinalText">score: </span>' + this.score + ' + ' + scoreDaysHTML + ' nombre de jours restants = ' + scoreFinalHTML;
+
+		this.callFinalAnwsersBoard();
+		this.refreshFinalScore();
 	}
 
 	refreshGame()
