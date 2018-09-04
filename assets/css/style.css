@@ -22,7 +22,9 @@ body {
   justify-content: center;
   align-items: center;
   height: 100%;
-  background-color: black; }
+  background-color: black;
+  color: white;
+  font-family: "Orbitron", sans-serif; }
   .flsContainer .flsTutoContainer {
     padding: 20px;
     height: 100%;
@@ -30,29 +32,23 @@ body {
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    font-family: "Open Sans", sans-serif;
-    color: white; }
-    .flsContainer .flsTutoContainer .flsTutoTitle {
-      font-family: "Orbitron", sans-serif; }
+    font-family: "Open Sans", sans-serif; }
   .flsContainer .flsUiContainer {
     position: absolute;
-    top: 20px;
-    color: white; }
-    .flsContainer .flsUiContainer .flsScoreContainer {
-      font-family: "Orbitron", sans-serif; }
-    .flsContainer .flsUiContainer .flsDateContainer {
-      font-family: "Orbitron", sans-serif; }
-      .flsContainer .flsUiContainer .flsDateContainer .flsDateDay, .flsContainer .flsUiContainer .flsDateContainer .flsDateMonth {
-        display: inline-block; }
-      .flsContainer .flsUiContainer .flsDateContainer .flsDateDay {
-        margin-right: 8px;
-        min-width: 30px;
-        text-align: right; }
+    top: 20px; }
+    .flsContainer .flsUiContainer .flsDateContainer .flsDateDay, .flsContainer .flsUiContainer .flsDateContainer .flsDateMonth {
+      display: inline-block; }
+    .flsContainer .flsUiContainer .flsDateContainer .flsDateDay {
+      margin-right: 8px;
+      min-width: 30px;
+      text-align: right; }
+  .flsContainer .flsCanvasContainer {
+    position: fixed; }
   .flsContainer .flsFruitLegumeContainer {
     position: absolute;
     width: 100%;
     height: 100%; }
-    .flsContainer .flsFruitLegumeContainer .flsFruitLegumeImg, .flsContainer .flsFruitLegumeContainer .answerImg {
+    .flsContainer .flsFruitLegumeContainer .flsFruitLegumeImg, .flsContainer .flsFruitLegumeContainer .flsAnswerImg {
       position: absolute;
       top: 50%;
       left: 50%;
@@ -66,8 +62,10 @@ body {
       left: calc(100% + 256px); }
     .flsContainer .flsFruitLegumeContainer .flsFruitLegumeImgAnswerFalse {
       left: -256px; }
-    .flsContainer .flsFruitLegumeContainer .answerImg {
+    .flsContainer .flsFruitLegumeContainer .flsAnswerImg {
       z-index: 1; }
+  .flsContainer .flsScoreFinalContainer .flsScoreFinalText, .flsContainer .flsScoreFinalContainer .flsScoreFinal {
+    font-size: 1.5rem; }
 
 .flsButton {
   border: none;

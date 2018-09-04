@@ -119,11 +119,14 @@ let Fruilegsais = class
 				alt: "radis roses"							
 			}
 		];
-		this.badAnswerImg = createElem("img", ["id", "class", "src"], ["answerImg", "answerImg", "assets/img/answer_inco.svg"]);
-		this.goodAnswerImg = createElem("img", ["id", "class", "src"], ["answerImg", "answerImg", "assets/img/answer_co.svg"]);
+		this.badAnswerImg = createElem("img", ["id", "class", "src"], ["flsAnswerImg", "flsAnswerImg", "assets/img/answer_inco.svg"]);
+		this.goodAnswerImg = createElem("img", ["id", "class", "src"], ["flsAnswerImg", "flsAnswerImg", "assets/img/answer_co.svg"]);
 
 		this.restFruitsLegumesList = this.fruitsLegumesList;
 		this.finalResult = [[],[]];
+		this.score = 0;
+		this.endOfGame = false;
+		this.numberDaysRemaining = 0;
 	}
 
 	choseRandFruitLegume()
@@ -149,25 +152,19 @@ let Fruilegsais = class
 
 	updateDate()
 	{
-		if (this.currentDay == 29 && this.currentMonth == 11)
+		if (this.currentDay < this.daysByMonth[this.currentMonth])
 		{
-			//fin de la partie
+			this.currentDay += 1;
+			document.getElementById("flsDateDay").innerText = this.currentDay;
 		}
 		else
 		{
-			if (this.currentDay < this.daysByMonth[this.currentMonth])
-			{
-				this.currentDay += 1;
-				document.getElementById("flsDateDay").innerText = this.currentDay;
-			}
-			else
-			{
-				this.currentDay = 1;
-				this.currentMonth += 1;
-				document.getElementById("flsDateDay").innerText = this.currentDay;
-				document.getElementById("flsDateMonth").innerText = this.monthList[this.currentMonth];
-			}			
+			this.currentDay = 1;
+			this.currentMonth += 1;
+			document.getElementById("flsDateDay").innerText = this.currentDay;
+			document.getElementById("flsDateMonth").innerText = this.monthList[this.currentMonth];
 		}
+
 		if (this.currentDay == 21 && this.currentMonth % 3 == 0)
 		{
 			let flsSeason = document.getElementById("flsSeason");
@@ -189,14 +186,50 @@ let Fruilegsais = class
 		}
 	}
 
-	countTime()
+	countTime(milliSec)
 	{
-		let currentTime = new Date().getTime();
-		if ((currentTime - this.timeStart) >= 50 || typeof this.timeStart == "undefined")
+		if (this.currentDay == 29 && this.currentMonth == 11)
 		{
-			this.updateDate();
-			this.timeStart = new Date().getTime();
+			//fin de la partie
 		}
+		else
+		{
+			let currentTime = new Date().getTime();
+			if ((currentTime - this.timeStart) >= milliSec || typeof this.timeStart == "undefined")
+			{
+				this.updateDate();
+				this.timeStart = new Date().getTime();
+
+				// calcul time bonus score on final screen				
+				if (this.endOfGame == true)
+				{
+					this.numberDaysRemaining += 1
+				}
+			}
+		}
+	}
+
+	refreshBonusTimeScore()
+	{
+		this.countTime(10);
+		document.getElementById("scoreDaysRemaining").innerText = this.numberDaysRemaining;
+		document.getElementById("flsScoreFinal").innerText = this.score + this.numberDaysRemaining;
+		this.refreshGameLoop = window.requestAnimationFrame(this.refreshBonusTimeScore.bind(this));
+	}
+
+
+
+	callFinalScreen()
+	{
+		let flsContainer = document.getElementById("flsContainer");
+		let scoreFinalContainer = createElem("div", ["id", "class"], ["flsScoreFinalContainer","flsScoreFinalContainer"]);
+		let scoreDaysHTML = '<span id="scoreDaysRemaining" class="scoreDaysRemaining"></span>';
+		let scoreFinalHTML = '<span id="flsScoreFinal" class="flsScoreFinal">' + this.score + '</span>';
+
+		flsContainer.appendChild(scoreFinalContainer);
+		scoreFinalContainer.innerHTML = '<span class="flsScoreFinalText">score: </span>' + this.score + ' + ' + scoreDaysHTML + ' nombre de jours restants = ' + scoreFinalHTML;
+
+		this.refreshBonusTimeScore();
 	}
 
 	treatScore(answerResult)
@@ -205,13 +238,16 @@ let Fruilegsais = class
 
 		if (answerResult == true)
 		{
-			score.innerText = parseInt(score.innerText, 10) + 1;
+			this.score += 100;
+			score.innerText = this.score;
+			this.numberOfGoodAnswer += 1;
 		}
 		else
 		{
 			if (parseInt(score.innerText) > 0)
 			{
-				score.innerText = parseInt(score.innerText, 10) - 1;
+				this.score -= 100;
+				score.innerText = this.score;
 			}
 		}
 	}
@@ -252,6 +288,7 @@ let Fruilegsais = class
 	{
 		let fruitLegumeImg = document.getElementById("flsFruitLegumeImg");
 		let answerResult;
+		let that = this;
 
 		if (!fruitLegumeImg.classList.contains("flsFruitLegumeImgAnswerTrue") && !fruitLegumeImg.classList.contains("flsFruitLegumeImgAnswerFalse"))
 		{
@@ -262,9 +299,10 @@ let Fruilegsais = class
 			// reset
 			let deleteImg = setTimeout(function()
 			{
-				let answerImg = document.getElementById("answerImg");
+				let answerImg = document.getElementById("flsAnswerImg");
 				fruitLegumeImg.remove();
 				answerImg.remove();
+				that.endOfGame = that.restFruitsLegumesList.length == 0 ? true : false;
 				clearTimeout(deleteImg);
 			}, 500);
 
@@ -340,20 +378,26 @@ let Fruilegsais = class
 
 	refreshGame()
 	{
-		for (let i = this.canvasList.length - 1; i >= 0; i --)
+		if (this.endOfGame == false)//endOfGame status change in treatAnswer()
 		{
-			this.canvasList[i].clearRect(0, 0, this.canvasList[i].width, this.canvasList[i].height);
-		}
+			// refresh canvas
+			for (let i = this.canvasList.length - 1; i >= 0; i --)
+			{
+				this.canvasList[i].clearRect(0, 0, this.canvasList[i].width, this.canvasList[i].height);
+			}
 
-		if (this.restFruitsLegumesList.length > 0)
-		{
-			this.countTime();
+			// game cycle
+			this.countTime(50);
 			this.choseRandFruitLegume();
-	    	this.refreshGameLoop = requestAnimationFrame(this.refreshGame.bind(this));
+			this.refreshGameLoop = window.requestAnimationFrame(this.refreshGame.bind(this));
 		}
 		else
 		{
+			// end of game
 			window.cancelAnimationFrame(this.refreshGameLoop);
+			document.getElementById("flsFruitLegumeContainer").remove();
+			document.getElementById("flsScoreContainer").remove();
+			this.callFinalScreen();
 		}
 	}
 
@@ -402,8 +446,8 @@ let Fruilegsais = class
 		let flsContainer = document.getElementById("flsContainer");
 
 		//Score
-		let fruitlegsaisUi = createElem("div", "class", "flsUiContainer");
-		let flsScoreContainer = createElem("div", "class", "flsScoreContainer");
+		let fruitlegsaisUi = createElem("div", ["id", "class"], ["flsUiContainer", "flsUiContainer"]);
+		let flsScoreContainer = createElem("div", ["id", "class"], ["flsScoreContainer", "flsScoreContainer"]);
 		flsScoreContainer.innerText = "score: ";
 		let flsScore = createElem("span", "id", "flsScore");
 		flsScore.innerText = "0";
