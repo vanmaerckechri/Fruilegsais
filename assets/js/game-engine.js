@@ -275,7 +275,8 @@ let Fruilegsais = class
 		{
 			if (this.currentFruiLeg["monthToEat"][i] == this.monthList[this.currentMonth])
 			{
-				console.log(this.monthList[this.currentMonth])
+				console.log(answer)
+
 				if (answer == true)
 				{
 					accuracyAnswer = true;
