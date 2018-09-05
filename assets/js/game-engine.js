@@ -135,7 +135,7 @@ let Fruilegsais = class
 		this.goodAnswerImg = createElem("img", ["id", "class", "src"], ["flsAnswerImg", "flsAnswerImg", "assets/img/answer_co.svg"]);
 
 		this.restFruitsLegumesList = this.fruitsLegumesList.slice();// empty slice to clone array with objects(not instance it)
-		this.finalResult = [[], [], []];//this.finalResult[ [0] = fruit/legume index, [1] = month index, [2] = good/bad answer
+		this.finalResult = [[], [], []];//this.finalResult[ [0] = fruit/legume index/id, [1] = month index, [2] = good/bad answer
 		this.score = 0;
 		this.endOfGame = false;
 		this.numberDaysRemaining = 0;
@@ -180,19 +180,38 @@ let Fruilegsais = class
 		if (this.currentDay == 21 && this.currentMonth % 3 == 0)
 		{
 			let flsSeason = document.getElementById("flsSeason");
+			let flsDateSeasonContainer = document.getElementById("flsDateSeasonContainer");
 			switch(this.currentMonth)
 			{
 			    case 0:
-					flsSeason.innerText = "Printemps";
+			    	if (flsSeason.innerText != "Printemps")
+			    	{
+						flsSeason.innerText = "Printemps";
+					}
 			        break;
 			    case 3:
-					flsSeason.innerText = "Été";
+			    	if (flsSeason.innerText != "Été")
+			    	{
+						flsSeason.innerText = "Été";
+						flsDateSeasonContainer.classList.remove("flsBgPrintemps");
+						flsDateSeasonContainer.classList.add("flsBgEte");
+					}
 			        break;
 			    case 6:
-					flsSeason.innerText = "Automne";
+			    	if (flsSeason.innerText != "Automne")
+			    	{
+						flsSeason.innerText = "Automne";
+						flsDateSeasonContainer.classList.remove("flsBgEte");
+						flsDateSeasonContainer.classList.add("flsBgAutomne");
+					}
 			        break;
 			    case 9:
-					flsSeason.innerText = "Hiver";
+			    	if (flsSeason.innerText != "Hiver")
+			    	{
+						flsSeason.innerText = "Hiver";
+						flsDateSeasonContainer.classList.remove("flsBgAutomne");
+						flsDateSeasonContainer.classList.add("flsBgHiver");
+					}
 			        break;
 			} 
 		}
@@ -240,8 +259,8 @@ let Fruilegsais = class
 			{
 				this.score -= 100;
 				score.innerText = this.score;
-				this.finalResult[2].push(false);
 			}
+			this.finalResult[2].push(false);
 		}
 	}
 
@@ -249,32 +268,34 @@ let Fruilegsais = class
 	{
 		let fruitLegumeContainer = document.getElementById("flsFruitLegumeContainer");
 		let fruitLegumeImg;
+		let accuracyAnswer;
+
+		// check if this fruit/legume is in season
 		for (let i = this.currentFruiLeg["monthToEat"].length - 1; i >= 0; i--)
 		{
-			// check if this fruit/legume is in season
 			if (this.currentFruiLeg["monthToEat"][i] == this.monthList[this.currentMonth])
 			{
-				// good answer = in season
+				console.log(this.monthList[this.currentMonth])
 				if (answer == true)
 				{
-					fruitLegumeImg = this.goodAnswerImg;
-					fruitLegumeContainer.appendChild(fruitLegumeImg);
-					return true;
+					accuracyAnswer = true;
+				}
+				else
+				{
+					accuracyAnswer = false;
 				}
 				break;
 			}
-			// good answer = not in season
-			if (i == 0 && answer == false)
-			{
-				fruitLegumeImg = this.goodAnswerImg;
-				fruitLegumeContainer.appendChild(fruitLegumeImg);
-				return true;
-			}
 		}
-		// bad answer
-		fruitLegumeImg = this.badAnswerImg;
+		// not in season
+		if (typeof accuracyAnswer == "undefined")
+		{
+			accuracyAnswer = answer == false ? true : false;
+		}
+
+		fruitLegumeImg = accuracyAnswer == true ? this.goodAnswerImg : this.badAnswerImg;
 		fruitLegumeContainer.appendChild(fruitLegumeImg);
-		return false;
+		return accuracyAnswer;
 	}
 
 	treatAnswer(answer)
@@ -283,7 +304,7 @@ let Fruilegsais = class
 		let answerResult;
 		let that = this;
 
-		if (!fruitLegumeImg.classList.contains("flsFruitLegumeImgAnswerTrue") && !fruitLegumeImg.classList.contains("flsFruitLegumeImgAnswerFalse"))
+		if (this.endOfGame == false && !fruitLegumeImg.classList.contains("flsFruitLegumeImgAnswerTrue") && !fruitLegumeImg.classList.contains("flsFruitLegumeImgAnswerFalse"))
 		{
 			// score and display
 			answerResult = this.checkAccuracyAnswer(answer);
@@ -299,16 +320,14 @@ let Fruilegsais = class
 				clearTimeout(deleteImg);
 			}, 500);
 
-			// update answer array
+			// animate fruit/leg after answer
 			if (answer == true)
 			{
 				fruitLegumeImg.classList.add("flsFruitLegumeImgAnswerTrue");
-				this.finalResult[this.finalResult.length - 1].push(true);
 			}
 			else
 			{
 				fruitLegumeImg.classList.add("flsFruitLegumeImgAnswerFalse");
-				this.finalResult[this.finalResult.length - 1].push(false);
 			}
 		}
 	}
@@ -406,9 +425,18 @@ let Fruilegsais = class
 
 				if (this.monthList[colNum] == this.monthList[this.finalResult[1][rowNum]])
 				{
-					let monthChoosed = document.createElement("p");
+					let monthChoosed;
+					if (this.finalResult[2][rowNum] == true)
+					{
+						monthChoosed = this.goodAnswerImg;
+					}
+					else
+					{
+						monthChoosed = this.badAnswerImg;						
+					}
+					monthChoosed.setAttribute("id", "");
 					monthChoosed.setAttribute("class", "flsMonthChoosed");
-					newCell.appendChild(monthChoosed);
+					newCell.appendChild(monthChoosed.cloneNode(true));
 				}
 				for (let k = this.fruitsLegumesList[this.finalResult[0][rowNum]]["monthToEat"].length - 1; k >= 0; k--)
 				{
@@ -472,20 +500,35 @@ let Fruilegsais = class
 		}
 	}
 
+	detectKey(that, event)
+	{
+		let answer;
+		if (event.keyCode == 37)
+		{
+			answer = false;
+		}
+		else if (event.keyCode == 39)
+		{
+			answer = true;
+		}
+		that.treatAnswer(answer);
+	}
+
 	initCommands()
 	{
 		let fruitLegumeContainer = document.getElementById("flsFruitLegumeContainer");
 		let that = this;
 		let startEvent;
-		// with tactile
+		// on tactile
 		if ('ontouchstart' in document.documentElement)
 		{
 			startEvent = "touchstart";
 		}
-		// with mouse
+		// on computer
 		else
 		{
 			startEvent = "mousedown";
+			document.addEventListener("keydown", this.detectKey.bind(that, this), false);
 		}
 		fruitLegumeContainer.addEventListener(startEvent, this.chooseAnswer.bind(that, this), false);
 	}
@@ -528,19 +571,23 @@ let Fruilegsais = class
 		flsContainer.appendChild(fruitlegsaisUi);
 
 		//Date
-		let flsDateContainer = createElem("div", ["id", "class"], ["flsDateContainer", "flsDateContainer"]);
-		let flsDateDay = createElem("div", ["id", "class"], ["flsDateDay", "flsDateDay"]);
-		let flsDateMonth = createElem("div", ["id", "class"], ["flsDateMonth", "flsDateMonth"]);
-		let flsSeason = createElem("div", ["id", "class"], ["flsSeason", "flsSeason"]);
+		let flsDateSeasonContainer = createElem("div", ["id", "class"], ["flsDateSeasonContainer", "flsDateSeasonContainer flsBgPrintemps"]);
+		let flsDummyBoxFlex = createElem("span", ["class"], ["flsDummyBoxFlex"]);
+		let flsSeason = createElem("span", ["id", "class"], ["flsSeason", "flsSeason"]);
+		let flsDateContainer = createElem("span", ["id", "class"], ["flsDateContainer", "flsDateContainer"]);
+		let flsDateDay = createElem("span", ["id", "class"], ["flsDateDay", "flsDateDay"]);
+		let flsDateMonth = createElem("span", ["id", "class"], ["flsDateMonth", "flsDateMonth"]);
 
 		flsDateDay.innerText = this.currentDay;
 		flsDateMonth.innerText = this.monthList[this.currentMonth];
 		flsSeason.innerText = "Printemps";
 
+		flsDateSeasonContainer.appendChild(flsDummyBoxFlex);
+		flsDateSeasonContainer.appendChild(flsSeason);
 		flsDateContainer.appendChild(flsDateDay);
 		flsDateContainer.appendChild(flsDateMonth);
-		flsDateContainer.appendChild(flsSeason);
-		fruitlegsaisUi.appendChild(flsDateContainer);
+		flsDateSeasonContainer.appendChild(flsDateContainer);
+		fruitlegsaisUi.appendChild(flsDateSeasonContainer);
 
 		//Current Fruit/Legume
 		let flsFruitLegumeContainer = createElem("div", ["id", "class"], ["flsFruitLegumeContainer", "flsFruitLegumeContainer"]);

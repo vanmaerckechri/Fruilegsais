@@ -15,7 +15,7 @@ body
 	justify-content: flex-start;
 	align-items: center;
 	height: 100%;
-	background-color: black;
+	background-color: #141517;
   	color: white;
   	font-family: $font-title;
 	.flsTutoContainer
@@ -33,21 +33,42 @@ body
 	}
   	.flsUiContainer
   	{
-  		margin-top: 50px;
+  		width: 100%;
+  		letter-spacing: .2rem;
   		.flsScoreContainer
   		{
+  			padding: 10px 0;
+  			background-color: #e2deec;				
+  			color: black;
   		}
-  		.flsDateContainer
+  		.flsDateSeasonContainer
   		{
-  			.flsDateDay, .flsDateMonth
+  			padding: 10px;
+  			display: flex;
+  			justify-content: space-between;
+  			align-items: baseline;
+  			transition: background-color 1s;
+  			span
   			{
-  				display: inline-block;
-  			}
-  			.flsDateDay
+  				flex: 1;
+  			}	
+  			.flsDateContainer	
   			{
-  				margin-right: 8px;
-  				min-width: 30px;
+  				padding-right: 10px;
   				text-align: right;
+	  			.flsDateDay, .flsDateMonth
+	  			{
+	  				display: inline-block;
+	  			}
+	  			.flsDateDay
+	  			{
+	  				padding-right: 8px;
+	  				min-width: 30px;
+	  				text-align: right;
+	  			}
+	  		}
+	  		.flsSeason
+  			{
   			}
   		}
   	}
@@ -58,8 +79,6 @@ body
   	}
   	.flsFruitLegumeContainer
   	{
-  		border-left: 3px solid red;
-  		border-right: 3px solid green;
   		position: absolute;
   		width: 100%;
   		height: 100%;
@@ -128,7 +147,7 @@ body
   		{
   			.flsMonthToEat
   			{
-  				background-color: rgba(255, 100, 100, .5);
+  				background-color: rgba(0, 60, 120, .8);
   			}
   			span
   			{
@@ -137,10 +156,8 @@ body
   				align-items: center;
 	  			.flsMonthChoosed
 	  			{
-	  				border-radius: 50%;
 	  				width: 50%;
 	  				height: 50%;
-	  				background-color: rgba(125, 125, 250, .8);
 	  			}
 	  		}
   		}
